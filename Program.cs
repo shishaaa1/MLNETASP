@@ -1,11 +1,13 @@
-﻿using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.ML;
-using Microsoft.OpenApi.Models;
+﻿using Drivee_Model_WebApi2;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.ML.Data;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Drivee_Model_WebApi2;
+using Microsoft.Extensions.ML;
+using Microsoft.ML;
+using Microsoft.ML.Data;
+using Microsoft.OpenApi.Models;
+using static Drivee_Model_WebApi2.Drivee_Model;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -108,6 +110,52 @@ catch (Exception ex)
 {
 return Results.Problem($"Error checking model status: {ex.Message}");
 }
+});
+app.MapPost("/ai-predict", ([FromBody] FullPredictionRequest request) =>
+{
+    try
+    {
+        // Подготовка данных для модели
+        var input = new Drivee_Model.ModelInput
+        {
+            Price_start_local = (float)request.PriceStartLocal,
+            Price_bid_local = (float)request.PriceBidLocal,
+
+            // Рейтинг водителя
+            Driver_rating = (float)request.DriverRating,
+
+            // Дистанции и время
+            Distance_in_meters = (float)request.DistanceInMeters,
+            Duration_in_seconds = (float)request.DurationInSeconds,
+            Pickup_in_meters = (float)request.PickupInMeters,
+            Pickup_in_seconds = (float)request.PickupInSeconds,
+
+            // Категориальные данные
+            Platform = request.Platform,
+            Carmodel = request.CarModel,
+            Carname = request.CarName
+        };
+
+        // Вызов модели
+        var prediction = Drivee_Model.Predict(input);
+
+        // Расчет результата
+        bool willAccept = prediction.Score[0] > 0.5f;
+        double probability = Math.Round(prediction.Score[0], 4);
+
+        // Простой ответ
+        return Results.Ok(new
+        {
+            ЗаказПринят = willAccept,
+            ВероятностьПринятия = Math.Round(probability, 4),
+            Уверенность = probability > 0.8 ? "высокая" : probability > 0.7 ? "средняя" : "низкая",
+            Рекомендация = willAccept ? "Предложить цену" : "Изменить цену"
+        });
+    }
+    catch (Exception ex)
+    {
+        return Results.Problem($"Prediction error: {ex.Message}");
+    }
 });
 
 app.MapPost("/ml-predict-acceptance", ([FromBody] MLAcceptanceRequest request) =>
@@ -331,4 +379,33 @@ public class OptimalPriceResult
     public double MaxExpectedRevenue { get; set; }
     public double PriceStartLocal { get; set; }
     public List<PricePointAnalysis> AllOptions { get; set; }
+}
+public class PredictionRequest
+{
+    public double PriceStart { get; set; }
+    public double PriceBid { get; set; }
+    public double DriverRating { get; set; }
+    public double Distance { get; set; } = 0;
+    public double Duration { get; set; } = 0;
+}
+public class FullPredictionRequest
+{
+    // Основные цены
+    public double PriceStartLocal { get; set; }
+    public double PriceBidLocal { get; set; }
+
+    // Рейтинг и метрики водителя
+    public double DriverRating { get; set; }
+
+    // Дистанции и время
+    public double DistanceInMeters { get; set; }
+    public double DurationInSeconds { get; set; }
+    public double PickupInMeters { get; set; }
+    public double PickupInSeconds { get; set; }
+
+    // Категориальные данные
+    public string Platform { get; set; } = "android";
+    public string CarModel { get; set; } = "unknown";
+    public string CarName { get; set; } = "unknown";
+
 }
