@@ -92,7 +92,7 @@ app.MapPost("/predict", async ([FromBody] DriveeModel.ModelInput input) =>
 {
     try
     {
-        var prediction = DriveeModel.Predict(input, horizon: 1);
+        var prediction = DriveeModel.Predict(input);
         return Results.Ok(prediction);
     }
     catch (Exception ex)

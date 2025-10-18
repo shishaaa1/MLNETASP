@@ -1,5 +1,5 @@
 ﻿{
-  "Scenario": "Forecasting",
+  "Scenario": "Classification",
   "DataSource": {
     "Version": 3,
     "EscapeCharacter": "\"",
@@ -15,7 +15,7 @@
     "ColumnProperties": [
       {
         "ColumnName": "order_id",
-        "ColumnPurpose": "Feature",
+        "ColumnPurpose": "Ignore",
         "ColumnDataFormat": "Single",
         "IsCategorical": false,
         "Type": "Column",
@@ -47,7 +47,7 @@
       },
       {
         "ColumnName": "tender_id",
-        "ColumnPurpose": "Feature",
+        "ColumnPurpose": "Ignore",
         "ColumnDataFormat": "Single",
         "IsCategorical": false,
         "Type": "Column",
@@ -63,7 +63,7 @@
       },
       {
         "ColumnName": "driver_id",
-        "ColumnPurpose": "Feature",
+        "ColumnPurpose": "Ignore",
         "ColumnDataFormat": "Single",
         "IsCategorical": false,
         "Type": "Column",
@@ -127,7 +127,7 @@
       },
       {
         "ColumnName": "user_id",
-        "ColumnPurpose": "Feature",
+        "ColumnPurpose": "Ignore",
         "ColumnDataFormat": "Single",
         "IsCategorical": false,
         "Type": "Column",
@@ -151,7 +151,7 @@
       },
       {
         "ColumnName": "is_done",
-        "ColumnPurpose": "Feature",
+        "ColumnPurpose": "Label",
         "ColumnDataFormat": "String",
         "IsCategorical": true,
         "Type": "Column",
@@ -159,7 +159,7 @@
       },
       {
         "ColumnName": "column19",
-        "ColumnPurpose": "Feature",
+        "ColumnPurpose": "Ignore",
         "ColumnDataFormat": "String",
         "IsCategorical": false,
         "Type": "Column",
@@ -178,124 +178,516 @@
       {
         "Version": 1,
         "Type": "Trial",
-        "TrainerName": "ForecastBySsa",
-        "Score": 87.914972601360844,
-        "RuntimeInSeconds": 3.12,
+        "TrainerName": "LightGbmMulti",
+        "Score": 0.61347809782802853,
+        "RuntimeInSeconds": 2.654,
         "Parameter": {
-          "_SCHEMA_": "e0",
+          "_SCHEMA_": "e0 * e1 * e2 * e3 * e4 * e5 * e6 * e7 * e8 * e11 * e16",
           "e0": {
-            "WindowSize": 696,
-            "SeriesLength": 2834,
-            "TrainSize": 50000,
-            "Horizon": 50000,
-            "OutputColumnName": "price_start_local",
-            "InputColumnName": "price_start_local",
-            "ConfidenceLowerBoundColumn": "price_start_local_LB",
-            "ConfidenceUpperBoundColumn": "price_start_local_UB"
+            "OutputColumnNames": [
+              "platform"
+            ],
+            "InputColumnNames": [
+              "platform"
+            ]
+          },
+          "e1": {
+            "OutputColumnNames": [
+              "distance_in_meters",
+              "duration_in_seconds",
+              "driver_rating",
+              "pickup_in_meters",
+              "pickup_in_seconds",
+              "price_start_local",
+              "price_bid_local"
+            ],
+            "InputColumnNames": [
+              "distance_in_meters",
+              "duration_in_seconds",
+              "driver_rating",
+              "pickup_in_meters",
+              "pickup_in_seconds",
+              "price_start_local",
+              "price_bid_local"
+            ]
+          },
+          "e11": {
+            "NumberOfLeaves": 4,
+            "MinimumExampleCountPerLeaf": 20,
+            "LearningRate": 0.45729646161625559,
+            "NumberOfTrees": 895,
+            "SubsampleFraction": 0.99999977667298645,
+            "MaximumBinCountPerFeature": 197,
+            "FeatureFraction": 0.99999999,
+            "L1Regularization": 2E-10,
+            "L2Regularization": 0.99999977667298645,
+            "LabelColumnName": "is_done",
+            "FeatureColumnName": "Features"
+          },
+          "e16": {
+            "OutputColumnName": "PredictedLabel",
+            "InputColumnName": "PredictedLabel"
+          },
+          "e2": {
+            "InputColumnName": "order_timestamp",
+            "OutputColumnName": "order_timestamp"
+          },
+          "e3": {
+            "InputColumnName": "tender_timestamp",
+            "OutputColumnName": "tender_timestamp"
+          },
+          "e4": {
+            "InputColumnName": "driver_reg_date",
+            "OutputColumnName": "driver_reg_date"
+          },
+          "e5": {
+            "InputColumnName": "carmodel",
+            "OutputColumnName": "carmodel"
+          },
+          "e6": {
+            "InputColumnName": "carname",
+            "OutputColumnName": "carname"
+          },
+          "e7": {
+            "InputColumnNames": [
+              "platform",
+              "distance_in_meters",
+              "duration_in_seconds",
+              "driver_rating",
+              "pickup_in_meters",
+              "pickup_in_seconds",
+              "price_start_local",
+              "price_bid_local",
+              "order_timestamp",
+              "tender_timestamp",
+              "driver_reg_date",
+              "carmodel",
+              "carname"
+            ],
+            "OutputColumnName": "Features"
+          },
+          "e8": {
+            "OutputColumnName": "is_done",
+            "InputColumnName": "is_done",
+            "AddKeyValueAnnotationsAsText": false
           }
         }
       },
       {
         "Version": 1,
         "Type": "Trial",
-        "TrainerName": "ForecastBySsa",
-        "Score": 89.405475747022081,
-        "RuntimeInSeconds": 20.887,
+        "TrainerName": "LightGbmMulti",
+        "Score": 0.60028952022269166,
+        "RuntimeInSeconds": 28.884,
         "Parameter": {
-          "_SCHEMA_": "e0",
+          "_SCHEMA_": "e0 * e1 * e2 * e3 * e4 * e5 * e6 * e7 * e8 * e11 * e16",
           "e0": {
-            "WindowSize": 2146,
-            "SeriesLength": 2959,
-            "TrainSize": 50000,
-            "Horizon": 50000,
-            "OutputColumnName": "price_start_local",
-            "InputColumnName": "price_start_local",
-            "ConfidenceLowerBoundColumn": "price_start_local_LB",
-            "ConfidenceUpperBoundColumn": "price_start_local_UB"
+            "OutputColumnNames": [
+              "platform"
+            ],
+            "InputColumnNames": [
+              "platform"
+            ]
+          },
+          "e1": {
+            "OutputColumnNames": [
+              "distance_in_meters",
+              "duration_in_seconds",
+              "driver_rating",
+              "pickup_in_meters",
+              "pickup_in_seconds",
+              "price_start_local",
+              "price_bid_local"
+            ],
+            "InputColumnNames": [
+              "distance_in_meters",
+              "duration_in_seconds",
+              "driver_rating",
+              "pickup_in_meters",
+              "pickup_in_seconds",
+              "price_start_local",
+              "price_bid_local"
+            ]
+          },
+          "e11": {
+            "NumberOfLeaves": 332,
+            "MinimumExampleCountPerLeaf": 21,
+            "LearningRate": 0.78256128193160968,
+            "NumberOfTrees": 2706,
+            "SubsampleFraction": 0.12864124311091052,
+            "MaximumBinCountPerFeature": 213,
+            "FeatureFraction": 0.99999999,
+            "L1Regularization": 3.2985946913033829E-10,
+            "L2Regularization": 0.99999977667298645,
+            "LabelColumnName": "is_done",
+            "FeatureColumnName": "Features"
+          },
+          "e16": {
+            "OutputColumnName": "PredictedLabel",
+            "InputColumnName": "PredictedLabel"
+          },
+          "e2": {
+            "InputColumnName": "order_timestamp",
+            "OutputColumnName": "order_timestamp"
+          },
+          "e3": {
+            "InputColumnName": "tender_timestamp",
+            "OutputColumnName": "tender_timestamp"
+          },
+          "e4": {
+            "InputColumnName": "driver_reg_date",
+            "OutputColumnName": "driver_reg_date"
+          },
+          "e5": {
+            "InputColumnName": "carmodel",
+            "OutputColumnName": "carmodel"
+          },
+          "e6": {
+            "InputColumnName": "carname",
+            "OutputColumnName": "carname"
+          },
+          "e7": {
+            "InputColumnNames": [
+              "platform",
+              "distance_in_meters",
+              "duration_in_seconds",
+              "driver_rating",
+              "pickup_in_meters",
+              "pickup_in_seconds",
+              "price_start_local",
+              "price_bid_local",
+              "order_timestamp",
+              "tender_timestamp",
+              "driver_reg_date",
+              "carmodel",
+              "carname"
+            ],
+            "OutputColumnName": "Features"
+          },
+          "e8": {
+            "OutputColumnName": "is_done",
+            "InputColumnName": "is_done",
+            "AddKeyValueAnnotationsAsText": false
           }
         }
       },
       {
         "Version": 1,
         "Type": "Trial",
-        "TrainerName": "ForecastBySsa",
-        "Score": 89.410240650281892,
-        "RuntimeInSeconds": 1.353,
+        "TrainerName": "FastForestOva",
+        "Score": 0.58494183624201435,
+        "RuntimeInSeconds": 2.302,
         "Parameter": {
-          "_SCHEMA_": "e0",
+          "_SCHEMA_": "e0 * e1 * e2 * e3 * e4 * e5 * e6 * e7 * e8 * e10 * e16",
           "e0": {
-            "WindowSize": 415,
-            "SeriesLength": 1406,
-            "TrainSize": 50000,
-            "Horizon": 50000,
-            "OutputColumnName": "price_start_local",
-            "InputColumnName": "price_start_local",
-            "ConfidenceLowerBoundColumn": "price_start_local_LB",
-            "ConfidenceUpperBoundColumn": "price_start_local_UB"
+            "OutputColumnNames": [
+              "platform"
+            ],
+            "InputColumnNames": [
+              "platform"
+            ]
+          },
+          "e1": {
+            "OutputColumnNames": [
+              "distance_in_meters",
+              "duration_in_seconds",
+              "driver_rating",
+              "pickup_in_meters",
+              "pickup_in_seconds",
+              "price_start_local",
+              "price_bid_local"
+            ],
+            "InputColumnNames": [
+              "distance_in_meters",
+              "duration_in_seconds",
+              "driver_rating",
+              "pickup_in_meters",
+              "pickup_in_seconds",
+              "price_start_local",
+              "price_bid_local"
+            ]
+          },
+          "e10": {
+            "NumberOfTrees": 4,
+            "NumberOfLeaves": 4,
+            "FeatureFraction": 0.9803122,
+            "LabelColumnName": "is_done",
+            "FeatureColumnName": "Features"
+          },
+          "e16": {
+            "OutputColumnName": "PredictedLabel",
+            "InputColumnName": "PredictedLabel"
+          },
+          "e2": {
+            "InputColumnName": "order_timestamp",
+            "OutputColumnName": "order_timestamp"
+          },
+          "e3": {
+            "InputColumnName": "tender_timestamp",
+            "OutputColumnName": "tender_timestamp"
+          },
+          "e4": {
+            "InputColumnName": "driver_reg_date",
+            "OutputColumnName": "driver_reg_date"
+          },
+          "e5": {
+            "InputColumnName": "carmodel",
+            "OutputColumnName": "carmodel"
+          },
+          "e6": {
+            "InputColumnName": "carname",
+            "OutputColumnName": "carname"
+          },
+          "e7": {
+            "InputColumnNames": [
+              "platform",
+              "distance_in_meters",
+              "duration_in_seconds",
+              "driver_rating",
+              "pickup_in_meters",
+              "pickup_in_seconds",
+              "price_start_local",
+              "price_bid_local",
+              "order_timestamp",
+              "tender_timestamp",
+              "driver_reg_date",
+              "carmodel",
+              "carname"
+            ],
+            "OutputColumnName": "Features"
+          },
+          "e8": {
+            "OutputColumnName": "is_done",
+            "InputColumnName": "is_done",
+            "AddKeyValueAnnotationsAsText": false
           }
         }
       },
       {
         "Version": 1,
         "Type": "Trial",
-        "TrainerName": "ForecastBySsa",
-        "Score": 116.93466119505193,
-        "RuntimeInSeconds": 0.095,
+        "TrainerName": "FastForestOva",
+        "Score": 0.58368605049486921,
+        "RuntimeInSeconds": 2.315,
         "Parameter": {
-          "_SCHEMA_": "e0",
+          "_SCHEMA_": "e0 * e1 * e2 * e3 * e4 * e5 * e6 * e7 * e8 * e10 * e16",
           "e0": {
-            "WindowSize": 2,
-            "SeriesLength": 10,
-            "TrainSize": 50000,
-            "Horizon": 50000,
-            "OutputColumnName": "price_start_local",
-            "InputColumnName": "price_start_local",
-            "ConfidenceLowerBoundColumn": "price_start_local_LB",
-            "ConfidenceUpperBoundColumn": "price_start_local_UB"
+            "OutputColumnNames": [
+              "platform"
+            ],
+            "InputColumnNames": [
+              "platform"
+            ]
+          },
+          "e1": {
+            "OutputColumnNames": [
+              "distance_in_meters",
+              "duration_in_seconds",
+              "driver_rating",
+              "pickup_in_meters",
+              "pickup_in_seconds",
+              "price_start_local",
+              "price_bid_local"
+            ],
+            "InputColumnNames": [
+              "distance_in_meters",
+              "duration_in_seconds",
+              "driver_rating",
+              "pickup_in_meters",
+              "pickup_in_seconds",
+              "price_start_local",
+              "price_bid_local"
+            ]
+          },
+          "e10": {
+            "NumberOfTrees": 4,
+            "NumberOfLeaves": 4,
+            "FeatureFraction": 1.0,
+            "LabelColumnName": "is_done",
+            "FeatureColumnName": "Features"
+          },
+          "e16": {
+            "OutputColumnName": "PredictedLabel",
+            "InputColumnName": "PredictedLabel"
+          },
+          "e2": {
+            "InputColumnName": "order_timestamp",
+            "OutputColumnName": "order_timestamp"
+          },
+          "e3": {
+            "InputColumnName": "tender_timestamp",
+            "OutputColumnName": "tender_timestamp"
+          },
+          "e4": {
+            "InputColumnName": "driver_reg_date",
+            "OutputColumnName": "driver_reg_date"
+          },
+          "e5": {
+            "InputColumnName": "carmodel",
+            "OutputColumnName": "carmodel"
+          },
+          "e6": {
+            "InputColumnName": "carname",
+            "OutputColumnName": "carname"
+          },
+          "e7": {
+            "InputColumnNames": [
+              "platform",
+              "distance_in_meters",
+              "duration_in_seconds",
+              "driver_rating",
+              "pickup_in_meters",
+              "pickup_in_seconds",
+              "price_start_local",
+              "price_bid_local",
+              "order_timestamp",
+              "tender_timestamp",
+              "driver_reg_date",
+              "carmodel",
+              "carname"
+            ],
+            "OutputColumnName": "Features"
+          },
+          "e8": {
+            "OutputColumnName": "is_done",
+            "InputColumnName": "is_done",
+            "AddKeyValueAnnotationsAsText": false
           }
         }
       },
       {
         "Version": 1,
         "Type": "Trial",
-        "TrainerName": "ForecastBySsa",
-        "Score": 116.93466119505193,
-        "RuntimeInSeconds": 0.007,
+        "TrainerName": "FastForestOva",
+        "Score": 0.58368605049486921,
+        "RuntimeInSeconds": 2.235,
         "Parameter": {
-          "_SCHEMA_": "e0",
+          "_SCHEMA_": "e0 * e1 * e2 * e3 * e4 * e5 * e6 * e7 * e8 * e10 * e16",
           "e0": {
-            "WindowSize": 2,
-            "SeriesLength": 1396,
-            "TrainSize": 50000,
-            "Horizon": 50000,
-            "OutputColumnName": "price_start_local",
-            "InputColumnName": "price_start_local",
-            "ConfidenceLowerBoundColumn": "price_start_local_LB",
-            "ConfidenceUpperBoundColumn": "price_start_local_UB"
+            "OutputColumnNames": [
+              "platform"
+            ],
+            "InputColumnNames": [
+              "platform"
+            ]
+          },
+          "e1": {
+            "OutputColumnNames": [
+              "distance_in_meters",
+              "duration_in_seconds",
+              "driver_rating",
+              "pickup_in_meters",
+              "pickup_in_seconds",
+              "price_start_local",
+              "price_bid_local"
+            ],
+            "InputColumnNames": [
+              "distance_in_meters",
+              "duration_in_seconds",
+              "driver_rating",
+              "pickup_in_meters",
+              "pickup_in_seconds",
+              "price_start_local",
+              "price_bid_local"
+            ]
+          },
+          "e10": {
+            "NumberOfTrees": 4,
+            "NumberOfLeaves": 9,
+            "FeatureFraction": 1.0,
+            "LabelColumnName": "is_done",
+            "FeatureColumnName": "Features"
+          },
+          "e16": {
+            "OutputColumnName": "PredictedLabel",
+            "InputColumnName": "PredictedLabel"
+          },
+          "e2": {
+            "InputColumnName": "order_timestamp",
+            "OutputColumnName": "order_timestamp"
+          },
+          "e3": {
+            "InputColumnName": "tender_timestamp",
+            "OutputColumnName": "tender_timestamp"
+          },
+          "e4": {
+            "InputColumnName": "driver_reg_date",
+            "OutputColumnName": "driver_reg_date"
+          },
+          "e5": {
+            "InputColumnName": "carmodel",
+            "OutputColumnName": "carmodel"
+          },
+          "e6": {
+            "InputColumnName": "carname",
+            "OutputColumnName": "carname"
+          },
+          "e7": {
+            "InputColumnNames": [
+              "platform",
+              "distance_in_meters",
+              "duration_in_seconds",
+              "driver_rating",
+              "pickup_in_meters",
+              "pickup_in_seconds",
+              "price_start_local",
+              "price_bid_local",
+              "order_timestamp",
+              "tender_timestamp",
+              "driver_reg_date",
+              "carmodel",
+              "carname"
+            ],
+            "OutputColumnName": "Features"
+          },
+          "e8": {
+            "OutputColumnName": "is_done",
+            "InputColumnName": "is_done",
+            "AddKeyValueAnnotationsAsText": false
           }
         }
       }
     ],
     "Estimators": {
-      "e0": "ForecastBySsa"
+      "e0": "OneHotEncoding",
+      "e1": "ReplaceMissingValues",
+      "e2": "FeaturizeText",
+      "e3": "FeaturizeText",
+      "e4": "FeaturizeText",
+      "e5": "FeaturizeText",
+      "e6": "FeaturizeText",
+      "e7": "Concatenate",
+      "e8": "MapValueToKey",
+      "e9": "FastTreeOva",
+      "e10": "FastForestOva",
+      "e11": "LightGbmMulti",
+      "e12": "LbfgsLogisticRegressionOva",
+      "e13": "LbfgsMaximumEntropyMulti",
+      "e14": "SdcaMaximumEntropyMulti",
+      "e15": "SdcaLogisticRegressionOva",
+      "e16": "MapKeyToValue"
     },
-    "Schema": "e0",
-    "MetricName": "RMSE",
+    "Schema": "e0 * e1 * e2 * e3 * e4 * e5 * e6 * e7 * e8 * (e9 + e10 + e11 + e12 + e13 + e14 + e15) * e16",
+    "MetricName": "MacroAccuracy",
     "ModelFilePath": "C:\\Users\\dreamgonewithout\\Desktop\\MLNETASP_with_solution\\MLNETASP\\Drivee_Model.mlnet"
   },
   "Type": "TrainingConfig",
   "Version": 5,
   "TrainingOption": {
-    "Version": 3,
-    "OptimizeMetric": "RMSE",
+    "Version": 2,
     "Subsampling": false,
-    "Type": "ForecastingTrainingOption",
-    "TrainingTime": 15,
-    "UseCrossValidation": false,
-    "Horizon": 50000,
-    "TimeColumn": "order_timestamp",
-    "LabelColumn": "price_start_local",
-    "UseDefaultIndex": false,
+    "Tuner": "eci-cfo",
+    "Type": "ClassificationTrainingOption",
+    "TrainingTime": 60,
+    "OptimizeMetric": "MacroAccuracy",
+    "LabelColumn": "is_done",
+    "AvailableTrainers": [
+      "SDCA",
+      "LBFGS",
+      "LGBM",
+      "FASTTREE",
+      "FASTFOREST"
+    ],
     "ValidationOption": {
       "Version": 0,
       "Type": "TrainValidateSplitValidationOption",
