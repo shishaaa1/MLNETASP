@@ -8,8 +8,8 @@
     <PackageReference Include="Microsoft.Extensions.ML" Version="1.5.5" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.1.4" />
     <PackageReference Include="Microsoft.ML.TimeSeries" Version="3.0.1" />
-	  <PackageReference Include="Microsoft.ML.FastTree" Version="3.0.1"/>
-	  <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.0" />
+    <PackageReference Include="Microsoft.ML.FastTree" Version="3.0.1" />
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.0" />
   </ItemGroup>
   <ItemGroup Label="Drivee_Model">
     <None Include="Drivee_Model.mlnet">

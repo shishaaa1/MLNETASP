@@ -1,5 +1,5 @@
 ﻿{
-  "Scenario": "Regression",
+  "Scenario": "Forecasting",
   "DataSource": {
     "Version": 3,
     "EscapeCharacter": "\"",
@@ -135,7 +135,7 @@
       },
       {
         "ColumnName": "price_start_local",
-        "ColumnPurpose": "Label",
+        "ColumnPurpose": "Feature",
         "ColumnDataFormat": "Single",
         "IsCategorical": false,
         "Type": "Column",
@@ -171,24 +171,131 @@
     "Type": "LocalCPU",
     "Version": 1
   },
+  "RunHistory": {
+    "Version": 3,
+    "Type": "Result",
+    "Trials": [
+      {
+        "Version": 1,
+        "Type": "Trial",
+        "TrainerName": "ForecastBySsa",
+        "Score": 87.914972601360844,
+        "RuntimeInSeconds": 3.12,
+        "Parameter": {
+          "_SCHEMA_": "e0",
+          "e0": {
+            "WindowSize": 696,
+            "SeriesLength": 2834,
+            "TrainSize": 50000,
+            "Horizon": 50000,
+            "OutputColumnName": "price_start_local",
+            "InputColumnName": "price_start_local",
+            "ConfidenceLowerBoundColumn": "price_start_local_LB",
+            "ConfidenceUpperBoundColumn": "price_start_local_UB"
+          }
+        }
+      },
+      {
+        "Version": 1,
+        "Type": "Trial",
+        "TrainerName": "ForecastBySsa",
+        "Score": 89.405475747022081,
+        "RuntimeInSeconds": 20.887,
+        "Parameter": {
+          "_SCHEMA_": "e0",
+          "e0": {
+            "WindowSize": 2146,
+            "SeriesLength": 2959,
+            "TrainSize": 50000,
+            "Horizon": 50000,
+            "OutputColumnName": "price_start_local",
+            "InputColumnName": "price_start_local",
+            "ConfidenceLowerBoundColumn": "price_start_local_LB",
+            "ConfidenceUpperBoundColumn": "price_start_local_UB"
+          }
+        }
+      },
+      {
+        "Version": 1,
+        "Type": "Trial",
+        "TrainerName": "ForecastBySsa",
+        "Score": 89.410240650281892,
+        "RuntimeInSeconds": 1.353,
+        "Parameter": {
+          "_SCHEMA_": "e0",
+          "e0": {
+            "WindowSize": 415,
+            "SeriesLength": 1406,
+            "TrainSize": 50000,
+            "Horizon": 50000,
+            "OutputColumnName": "price_start_local",
+            "InputColumnName": "price_start_local",
+            "ConfidenceLowerBoundColumn": "price_start_local_LB",
+            "ConfidenceUpperBoundColumn": "price_start_local_UB"
+          }
+        }
+      },
+      {
+        "Version": 1,
+        "Type": "Trial",
+        "TrainerName": "ForecastBySsa",
+        "Score": 116.93466119505193,
+        "RuntimeInSeconds": 0.095,
+        "Parameter": {
+          "_SCHEMA_": "e0",
+          "e0": {
+            "WindowSize": 2,
+            "SeriesLength": 10,
+            "TrainSize": 50000,
+            "Horizon": 50000,
+            "OutputColumnName": "price_start_local",
+            "InputColumnName": "price_start_local",
+            "ConfidenceLowerBoundColumn": "price_start_local_LB",
+            "ConfidenceUpperBoundColumn": "price_start_local_UB"
+          }
+        }
+      },
+      {
+        "Version": 1,
+        "Type": "Trial",
+        "TrainerName": "ForecastBySsa",
+        "Score": 116.93466119505193,
+        "RuntimeInSeconds": 0.007,
+        "Parameter": {
+          "_SCHEMA_": "e0",
+          "e0": {
+            "WindowSize": 2,
+            "SeriesLength": 1396,
+            "TrainSize": 50000,
+            "Horizon": 50000,
+            "OutputColumnName": "price_start_local",
+            "InputColumnName": "price_start_local",
+            "ConfidenceLowerBoundColumn": "price_start_local_LB",
+            "ConfidenceUpperBoundColumn": "price_start_local_UB"
+          }
+        }
+      }
+    ],
+    "Estimators": {
+      "e0": "ForecastBySsa"
+    },
+    "Schema": "e0",
+    "MetricName": "RMSE",
+    "ModelFilePath": "C:\\Users\\dreamgonewithout\\Desktop\\MLNETASP_with_solution\\MLNETASP\\Drivee_Model.mlnet"
+  },
   "Type": "TrainingConfig",
   "Version": 5,
   "TrainingOption": {
-    "Version": 2,
-    "Subsampling": true,
-    "Tuner": "smac",
-    "Type": "RegressionTrainingOption",
-    "TrainingTime": 10,
-    "OptimizeMetric": "MSE",
+    "Version": 3,
+    "OptimizeMetric": "RMSE",
+    "Subsampling": false,
+    "Type": "ForecastingTrainingOption",
+    "TrainingTime": 15,
+    "UseCrossValidation": false,
+    "Horizon": 50000,
+    "TimeColumn": "order_timestamp",
     "LabelColumn": "price_start_local",
-    "AvailableTrainers": [
-      "SDCA",
-      "LBFGS",
-      "LGBM",
-      "FASTTREE",
-      "FASTTREE-DISKTRANSPOSE",
-      "FASTFOREST"
-    ],
+    "UseDefaultIndex": false,
     "ValidationOption": {
       "Version": 0,
       "Type": "TrainValidateSplitValidationOption",

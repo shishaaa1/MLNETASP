@@ -8,62 +8,66 @@ using System.IO;
 using System.Collections.Generic;
 using Microsoft.ML.Transforms.TimeSeries;
 
-public partial class DriveeModel
+namespace Drivee_Model_WebApi2
 {
-    /// <summary>
-    /// model input class for Drivee_Model.
-    /// </summary>
-    #region model input class
-    public class ModelInput
+    public partial class DriveeModel
     {
-        [LoadColumn(1)]
-        [ColumnName(@"price_start_local")]
-        public float Price_start_local { get; set; }
+        /// <summary>
+        /// model input class for Drivee_Model.
+        /// </summary>
+        #region model input class
+        public class ModelInput
+        {
+            [LoadColumn(15)]
+            [ColumnName(@"price_start_local")]
+            public float Price_start_local { get; set; }
+            [LoadColumn(16)]
+            [ColumnName(@"price_bid_local")]
+            public float Price_bid_local { get; set; }
+        }
 
-    }
+        #endregion
 
-    #endregion
+        /// <summary>
+        /// model output class for Drivee_Model.
+        /// </summary>
+        #region model output class
+        public class ModelOutput
+        {
+            [ColumnName(@"price_start_local")]
+            public float[] Price_start_local { get; set; }
 
-    /// <summary>
-    /// model output class for Drivee_Model.
-    /// </summary>
-    #region model output class
-    public class ModelOutput
-    {
-        [ColumnName(@"price_start_local")]
-        public float[] Price_start_local { get; set; }
+            [ColumnName(@"price_start_local_LB")]
+            public float[] Price_start_local_LB { get; set; }
 
-        [ColumnName(@"price_start_local_LB")]
-        public float[] Price_start_local_LB { get; set; }
+            [ColumnName(@"price_start_local_UB")]
+            public float[] Price_start_local_UB { get; set; }
 
-        [ColumnName(@"price_start_local_UB")]
-        public float[] Price_start_local_UB { get; set; }
+        }
 
-    }
+        #endregion
 
-    #endregion
+        private static string MLNetModelPath = Path.GetFullPath(@"C:\Users\dreamgonewithout\Desktop\MLNETASP_with_solution\MLNETASP\Drivee_Model.mlnet");
 
-    private static string MLNetModelPath = Path.GetFullPath(@"Drivee_Model.mlnet");
+        public static readonly Lazy<TimeSeriesPredictionEngine<ModelInput, ModelOutput>> PredictEngine = new Lazy<TimeSeriesPredictionEngine<ModelInput, ModelOutput>>(() => CreatePredictEngine(), true);
 
-    private static TimeSeriesPredictionEngine<ModelInput, ModelOutput>? _predictEngine;
+        /// <summary>
+        /// Use this method to predict on <see cref="ModelInput"/>.
+        /// </summary>
+        /// <param name="input">model input.</param>
+        /// <returns><seealso cref=" ModelOutput"/></returns>
+        public static ModelOutput Predict(ModelInput? input = null, int? horizon = null)
+        {
+            var predEngine = PredictEngine.Value;
+            return predEngine.Predict(input, horizon);
+        }
 
-    public static ModelOutput Predict(ModelInput input, int horizon = 1)
-    {
-        if (_predictEngine == null)
+        private static TimeSeriesPredictionEngine<ModelInput, ModelOutput> CreatePredictEngine()
         {
             var mlContext = new MLContext();
             ITransformer mlModel = mlContext.Model.Load(MLNetModelPath, out var schema);
-            _predictEngine = mlModel.CreateTimeSeriesEngine<ModelInput, ModelOutput>(mlContext);
+            return mlModel.CreateTimeSeriesEngine<ModelInput, ModelOutput>(mlContext);
         }
-
-        return _predictEngine.Predict(input, horizon);
-    }
-
-    private static TimeSeriesPredictionEngine<ModelInput, ModelOutput> CreatePredictEngine()
-    {
-        var mlContext = new MLContext();
-        ITransformer mlModel = mlContext.Model.Load(MLNetModelPath, out var schema);
-        return mlModel.CreateTimeSeriesEngine<ModelInput, ModelOutput>(mlContext);
     }
 }
-//
+

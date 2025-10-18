@@ -5,6 +5,8 @@ using Microsoft.OpenApi.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.ML.Data;
 using Microsoft.Extensions.Logging;
+using Drivee_Model_WebApi2;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -63,9 +65,6 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
-// -----------------------------
-// Exception handling middleware
-// -----------------------------
 app.UseExceptionHandler(errorApp =>
 {
     errorApp.Run(async context =>
@@ -80,9 +79,7 @@ app.UseExceptionHandler(errorApp =>
     });
 });
 
-// -----------------------------
-// Middleware
-// -----------------------------
+
 app.UseCors("AllowAll");
 app.UseSwagger();
 app.UseSwaggerUI(c =>
@@ -90,9 +87,7 @@ app.UseSwaggerUI(c =>
     c.SwaggerEndpoint("/swagger/v1/swagger.json", "Drivee API v1");
 });
 
-// ============================================================
-// EXISTING ENDPOINT — FORECAST
-// ============================================================
+
 app.MapPost("/predict", async ([FromBody] DriveeModel.ModelInput input) =>
 {
     try
@@ -108,114 +103,11 @@ app.MapPost("/predict", async ([FromBody] DriveeModel.ModelInput input) =>
 .WithName("PredictPrices")
 .WithOpenApi();
 
-// ============================================================
-// NEW ENDPOINT — PRICE ANALYSIS WITH RISK CALCULATION & AGREEMENT
-// ============================================================
-app.MapPost("/analyze", ([FromBody] PriceAnalysisRequest request) =>
-{
 
-    try
-    {
-        // Проверка на положительные значения
-        if (request.PriceStartLocal <= 0 || request.PriceBidLocal <= 0 || request.DriverRating <= 0)
-        {
-            return Results.BadRequest("Prices and Driver Rating must be positive values.");
-        }
-
-        // Проверка на допустимость статуса заказа
-        if (request.IsDone != "done" && request.IsDone != "cancel")
-        {
-            return Results.BadRequest("IsDone must be 'done' or 'cancel'.");
-        }
-
-        // --- 1️⃣ Golden middle price ---
-        double goldenMiddle = (request.PriceStartLocal + request.PriceBidLocal) / 2;
-
-        // --- 2️⃣ Risk analysis ---
-        double baseRisk = request.IsDone?.ToLower() == "cancel" ? 1.0 : 0.0;
-        double adjustedRisk = baseRisk - (request.DriverRating / 5.0);
-
-        // --- 3️⃣ Decision logic (passenger agreement) ---
-        string passengerDecision = (request.PriceBidLocal <= goldenMiddle * 1.1)
-            ? "agree"
-            : "decline";
-
-        // --- 4️⃣ Calculate percentage agreement ---
-        double passengerAgreementPercentage = (request.PriceStartLocal / goldenMiddle) * 100;
-        double driverAgreementPercentage = (request.PriceBidLocal / goldenMiddle) * 100;
-
-        // --- 5️⃣ Final price calculation based on risk ---
-        double finalPrice = PriceCalculator.CalculateFinalPrice(request.PriceStartLocal, request.PriceBidLocal, adjustedRisk);
-
-        var result = new PriceAnalysisResult
-        {
-            PassengerPrice = request.PriceStartLocal,
-            DriverPrice = request.PriceBidLocal,
-            GoldenMiddlePrice = goldenMiddle,
-            RiskFactor = Math.Round(adjustedRisk, 3),
-            PassengerDecision = passengerDecision,
-            PassengerAgreementPercentage = Math.Round(passengerAgreementPercentage, 2),
-            DriverAgreementPercentage = Math.Round(driverAgreementPercentage, 2),
-            FinalPrice = finalPrice
-        };
-
-        return Results.Ok(result);
-    }
-    catch (Exception ex)
-    {
-        return Results.Problem(ex.Message);
-    }
-})
-.WithName("AnalyzePrice")
-.WithOpenApi();
-
-// ============================================================
-// Controllers (if any)
-// ============================================================
 app.MapControllers();
 
-// ============================================================
-// Run app
-// ============================================================
 app.Run();
 
-// ============================================================
-// DTOs (Request / Response models)
-// ============================================================
-public class PriceAnalysisRequest
-{
-    public double PriceStartLocal { get; set; }  // цена пассажира
-    public double PriceBidLocal { get; set; }    // цена водителя
-    public string IsDone { get; set; }           // done / cancel
-    public double DriverRating { get; set; }     // рейтинг водителя
-}
 
-public class PriceAnalysisResult
-{
-    public double PassengerPrice { get; set; }
-    public double DriverPrice { get; set; }
-    public double GoldenMiddlePrice { get; set; }
-    public double RiskFactor { get; set; }
-    public string PassengerDecision { get; set; } // agree / decline
-    public double PassengerAgreementPercentage { get; set; }
-    public double DriverAgreementPercentage { get; set; }
-    public double FinalPrice { get; set; }  // Цена на основе риска
-}
 
-// Method to calculate final price based on risk
-public static class PriceCalculator
-{
-    public static double CalculateFinalPrice(double passengerPrice, double driverPrice, double riskFactor)
-    {
-        double finalPrice = (passengerPrice + driverPrice) / 2;
-        finalPrice += finalPrice * riskFactor;  // Учитываем риск в расчете
 
-        // Если цена водителя слишком высока, устанавливаем цену пассажира
-        if (driverPrice > finalPrice * 1.1)
-        {
-            finalPrice = passengerPrice;
-        }
-
-        return finalPrice;
-    }
-}
