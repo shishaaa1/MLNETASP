@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using Microsoft.ML;
 using Microsoft.ML.Data;
 using Microsoft.ML.Trainers;
-using Microsoft.ML.Trainers.LightGbm;
+using Microsoft.ML.Trainers.FastTree;
 using Microsoft.ML.Transforms;
 
 namespace Drivee_Model_WebApi2
@@ -91,15 +91,13 @@ namespace Drivee_Model_WebApi2
         public static IEstimator<ITransformer> BuildPipeline(MLContext mlContext)
         {
             // Data process configuration with pipeline data transformations
-            var pipeline = mlContext.Transforms.Categorical.OneHotEncoding(new []{new InputOutputColumnPair(@"carmodel", @"carmodel"),new InputOutputColumnPair(@"carname", @"carname"),new InputOutputColumnPair(@"platform", @"platform")}, outputKind: OneHotEncodingEstimator.OutputKind.Indicator)      
-                                    .Append(mlContext.Transforms.ReplaceMissingValues(new []{new InputOutputColumnPair(@"distance_in_meters", @"distance_in_meters"),new InputOutputColumnPair(@"duration_in_seconds", @"duration_in_seconds"),new InputOutputColumnPair(@"driver_rating", @"driver_rating"),new InputOutputColumnPair(@"pickup_in_meters", @"pickup_in_meters"),new InputOutputColumnPair(@"pickup_in_seconds", @"pickup_in_seconds"),new InputOutputColumnPair(@"price_start_local", @"price_start_local"),new InputOutputColumnPair(@"price_bid_local", @"price_bid_local")}))      
-                                    .Append(mlContext.Transforms.Text.FeaturizeText(inputColumnName:@"order_timestamp",outputColumnName:@"order_timestamp"))      
-                                    .Append(mlContext.Transforms.Text.FeaturizeText(inputColumnName:@"tender_timestamp",outputColumnName:@"tender_timestamp"))      
+            var pipeline = mlContext.Transforms.Categorical.OneHotEncoding(new []{new InputOutputColumnPair(@"platform", @"platform"),new InputOutputColumnPair(@"is_done", @"is_done")}, outputKind: OneHotEncodingEstimator.OutputKind.Indicator)      
+                                    .Append(mlContext.Transforms.ReplaceMissingValues(new []{new InputOutputColumnPair(@"distance_in_meters", @"distance_in_meters"),new InputOutputColumnPair(@"duration_in_seconds", @"duration_in_seconds"),new InputOutputColumnPair(@"driver_rating", @"driver_rating"),new InputOutputColumnPair(@"pickup_in_meters", @"pickup_in_meters"),new InputOutputColumnPair(@"pickup_in_seconds", @"pickup_in_seconds"),new InputOutputColumnPair(@"price_start_local", @"price_start_local")}))      
                                     .Append(mlContext.Transforms.Text.FeaturizeText(inputColumnName:@"driver_reg_date",outputColumnName:@"driver_reg_date"))      
-                                    .Append(mlContext.Transforms.Concatenate(@"Features", new []{@"carmodel",@"carname",@"platform",@"distance_in_meters",@"duration_in_seconds",@"driver_rating",@"pickup_in_meters",@"pickup_in_seconds",@"price_start_local",@"price_bid_local",@"order_timestamp",@"tender_timestamp",@"driver_reg_date"}))      
-                                    .Append(mlContext.Transforms.Conversion.MapValueToKey(outputColumnName:@"is_done",inputColumnName:@"is_done",addKeyValueAnnotationsAsText:false))      
-                                    .Append(mlContext.MulticlassClassification.Trainers.LightGbm(new LightGbmMulticlassTrainer.Options(){NumberOfLeaves=4,NumberOfIterations=616,MinimumExampleCountPerLeaf=20,LearningRate=0.17630427876356453,LabelColumnName=@"is_done",FeatureColumnName=@"Features",Booster=new GradientBooster.Options(){SubsampleFraction=0.46681449133960534,FeatureFraction=0.99999999,L1Regularization=2.1873548806870547E-09,L2Regularization=0.019825900161735636},MaximumBinCountPerFeature=224}))      
-                                    .Append(mlContext.Transforms.Conversion.MapKeyToValue(outputColumnName:@"PredictedLabel",inputColumnName:@"PredictedLabel"));
+                                    .Append(mlContext.Transforms.Text.FeaturizeText(inputColumnName:@"carmodel",outputColumnName:@"carmodel"))      
+                                    .Append(mlContext.Transforms.Text.FeaturizeText(inputColumnName:@"carname",outputColumnName:@"carname"))      
+                                    .Append(mlContext.Transforms.Concatenate(@"Features", new []{@"platform",@"is_done",@"distance_in_meters",@"duration_in_seconds",@"driver_rating",@"pickup_in_meters",@"pickup_in_seconds",@"price_start_local",@"driver_reg_date",@"carmodel",@"carname"}))      
+                                    .Append(mlContext.Regression.Trainers.FastTree(new FastTreeRegressionTrainer.Options(){NumberOfLeaves=605,MinimumExampleCountPerLeaf=13,NumberOfTrees=217,MaximumBinCountPerFeature=229,FeatureFraction=0.8251167296611956,LearningRate=0.03234976190160809,LabelColumnName=@"price_bid_local",FeatureColumnName=@"Features",DiskTranspose=false}));
 
             return pipeline;
         }

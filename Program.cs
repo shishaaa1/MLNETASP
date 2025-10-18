@@ -140,8 +140,8 @@ app.MapPost("/ai-predict", ([FromBody] FullPredictionRequest request) =>
         var prediction = Drivee_Model.Predict(input);
 
         // Расчет результата
-        bool willAccept = prediction.Score[0] > 0.5f;
-        double probability = Math.Round(prediction.Score[0], 4);
+        bool willAccept = prediction.Score > 0.5f;
+        double probability = Math.Round(prediction.Score, 4);
 
         // Простой ответ
         return Results.Ok(new
@@ -175,8 +175,6 @@ Pickup_in_seconds = (float)request.PickupInSeconds,
 Platform = request.Platform,
 Carmodel = request.CarModel,
 Carname = request.CarName,
-Order_timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
-Tender_timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
 Driver_reg_date = DateTime.Now.ToString("yyyy-MM-dd")
 };
 
@@ -185,8 +183,8 @@ Driver_reg_date = DateTime.Now.ToString("yyyy-MM-dd")
 
         // Интерпретируем результат
         // Для бинарной классификации, Score[1] обычно представляет вероятность положительного класса ("done")
-        bool isAccepted = prediction.Score[1] > 0.5f; // Используем Score[1] для положительного класса
-        double probability = isAccepted ? prediction.Score[1] : (1.0 - prediction.Score[1]);
+        bool isAccepted = prediction.Score > 0.5f; // Используем Score[1] для положительного класса
+        double probability = isAccepted ? prediction.Score : (1.0 - prediction.Score);
 
         // Нормализуем вероятность к диапазону [0, 1]
         probability = Math.Max(0.0, Math.Min(1.0, probability));
@@ -210,6 +208,54 @@ return Results.Problem($"ML Prediction error: {ex.Message}");
 })
 .WithName("MLPredictAcceptance")
 .WithOpenApi();
+app.MapPost("/ai-optimal-price-between", ([FromBody] OptimalPriceBetweenRequest request) =>
+{
+    try
+    {
+        var input = new Drivee_Model.ModelInput
+        {
+            Price_start_local = (float)request.PriceStartLocal,
+            Price_bid_local = (float)request.PriceBidLocal,
+            Driver_rating = (float)request.DriverRating,
+            Distance_in_meters = (float)request.DistanceInMeters,
+            Duration_in_seconds = (float)request.DurationInSeconds,
+            Platform = request.Platform ?? "android",
+            Pickup_in_meters = (float)request.PickupInMeters,
+            Pickup_in_seconds = 120,
+            Driver_reg_date = "2020-01-01",
+            Is_done = "done",
+            Carmodel = "unknown",
+            Carname = "unknown"
+        };
+
+        var prediction = Drivee_Model.Predict(input);
+        var bestPrice = prediction.Price_bid_local;
+
+        // Определяем минимальную и максимальную цену
+        var minPrice = Math.Min(request.PriceStartLocal, request.PriceBidLocal);
+        var maxPrice = Math.Max(request.PriceStartLocal, request.PriceBidLocal);
+
+        // Создаем экземпляр OptimalPrice
+        var optimalPriceCalculator = new OptimalPrice();
+        // Вычисляем оптимальную цену с помощью формулы
+        var optimalPrice = optimalPriceCalculator.CalculateOptimalPrice(minPrice, maxPrice, bestPrice, request.DriverRating, request.DistanceInMeters, request.DurationInSeconds);
+
+        // Получаем вероятность принятия с учетом оптимальной цены
+        var acceptanceProb = OptimalPrice.GetAcceptanceProbability(request.PriceStartLocal, optimalPrice, request.DriverRating);
+
+        return Results.Ok(new
+        {
+            ЦенаПассажира = Math.Round(request.PriceStartLocal, 2),
+            ЦенаВодителя = Math.Round(request.PriceBidLocal, 2),
+            ОптимальнаяЦена = Math.Round(optimalPrice, 2),
+            ВероятностьПринятия = Math.Round(acceptanceProb * 100, 1) + "%"
+        });
+    }
+    catch (Exception ex)
+    {
+        return Results.Problem($"Ошибка ИИ: {ex.Message}");
+    }
+});
 
 // ============================================================
 // OPTIMAL PRICE FINDER ENDPOINT
@@ -407,5 +453,67 @@ public class FullPredictionRequest
     public string Platform { get; set; } = "android";
     public string CarModel { get; set; } = "unknown";
     public string CarName { get; set; } = "unknown";
+
+}
+public class OptimalPriceBetweenRequest
+{
+
+    public double PriceStartLocal { get; set; }  // Цена пассажира
+    public double PriceBidLocal { get; set; }    // Цена водителя
+    public double DriverRating { get; set; }
+    public double DistanceInMeters { get; set; }
+    public double DurationInSeconds { get; set; } = 600;
+    public double PickupInMeters { get; set; } = 1000;
+    public string Platform { get; set; } = "android";
+}
+public class OptimalPrice
+{
+    public double CalculateOptimalPrice(double minPrice, double maxPrice, double bestPrice, double driverRating, double distance, double duration)
+    {
+        // Весовые коэффициенты для различных факторов
+        double driverRatingWeight = 0.2; // Влияние рейтинга водителя
+        double distanceWeight = 0.3; // Влияние дистанции
+        double durationWeight = 0.2; // Влияние продолжительности поездки
+        double baseAdjustment = 0.3; // Базовая корректировка на основе минимальной и максимальной цены
+
+        // Корректировка с учетом рейтинга водителя
+        double ratingAdjustment = driverRating * driverRatingWeight;
+
+        // Корректировка с учетом дистанции
+        double distanceAdjustment = (distance / 1000) * distanceWeight; // Переводим дистанцию в километры
+
+        // Корректировка с учетом длительности поездки
+        double durationAdjustment = (duration / 60) * durationWeight; // Переводим время в минуты
+
+        // Определяем корректированную цену
+        double adjustedPrice = bestPrice + ratingAdjustment + distanceAdjustment + durationAdjustment;
+
+        // Ограничиваем цену в пределах минимальной и максимальной
+        return Math.Max(minPrice, Math.Min(maxPrice, adjustedPrice));
+    }
+    public static double GetAcceptanceProbability(double priceStart, double priceBid, double driverRating)
+    {
+        try
+        {
+            var input = new Drivee_Model.ModelInput
+            {
+                Price_start_local = (float)priceStart,
+                Price_bid_local = (float)priceBid,
+                Driver_rating = (float)driverRating,
+                Distance_in_meters = 5000,
+                Platform = "android",
+                Is_done = "done"
+            };
+
+            var prediction = Drivee_Model.Predict(input);
+            return Math.Max(0.1, Math.Min(0.99, prediction.Score));
+        }
+        catch
+        {
+            double ratio = priceBid / priceStart;
+            double ratingFactor = driverRating / 5.0;
+            return Math.Max(0.1, Math.Min(0.99, 1.0 / (1.0 + Math.Exp((ratio - 1.0) * 3)) * (0.8 + 0.2 * ratingFactor)));
+        }
+    }
 
 }
