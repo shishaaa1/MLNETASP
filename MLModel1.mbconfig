@@ -1,0 +1,513 @@
+﻿{
+  "Scenario": "Regression",
+  "DataSource": {
+    "Version": 3,
+    "EscapeCharacter": "\"",
+    "ReadMultiLines": false,
+    "KeepDiacritics": false,
+    "KeepPunctuations": false,
+    "AllowQuoting": false,
+    "Type": "TabularFile",
+    "FilePath": "D:\\Загрузки\\filtered_train.csv",
+    "Delimiter": ",",
+    "DecimalMarker": ".",
+    "HasHeader": true,
+    "ColumnProperties": [
+      {
+        "ColumnName": "order_id",
+        "ColumnPurpose": "Ignore",
+        "ColumnDataFormat": "Single",
+        "IsCategorical": false,
+        "Type": "Column",
+        "Version": 5
+      },
+      {
+        "ColumnName": "order_timestamp",
+        "ColumnPurpose": "Ignore",
+        "ColumnDataFormat": "String",
+        "IsCategorical": false,
+        "Type": "Column",
+        "Version": 5
+      },
+      {
+        "ColumnName": "distance_in_meters",
+        "ColumnPurpose": "Feature",
+        "ColumnDataFormat": "Single",
+        "IsCategorical": false,
+        "Type": "Column",
+        "Version": 5
+      },
+      {
+        "ColumnName": "duration_in_seconds",
+        "ColumnPurpose": "Feature",
+        "ColumnDataFormat": "Single",
+        "IsCategorical": false,
+        "Type": "Column",
+        "Version": 5
+      },
+      {
+        "ColumnName": "tender_id",
+        "ColumnPurpose": "Ignore",
+        "ColumnDataFormat": "Single",
+        "IsCategorical": false,
+        "Type": "Column",
+        "Version": 5
+      },
+      {
+        "ColumnName": "tender_timestamp",
+        "ColumnPurpose": "Ignore",
+        "ColumnDataFormat": "String",
+        "IsCategorical": false,
+        "Type": "Column",
+        "Version": 5
+      },
+      {
+        "ColumnName": "driver_id",
+        "ColumnPurpose": "Ignore",
+        "ColumnDataFormat": "Single",
+        "IsCategorical": false,
+        "Type": "Column",
+        "Version": 5
+      },
+      {
+        "ColumnName": "driver_reg_date",
+        "ColumnPurpose": "Ignore",
+        "ColumnDataFormat": "String",
+        "IsCategorical": false,
+        "Type": "Column",
+        "Version": 5
+      },
+      {
+        "ColumnName": "driver_rating",
+        "ColumnPurpose": "Feature",
+        "ColumnDataFormat": "Single",
+        "IsCategorical": false,
+        "Type": "Column",
+        "Version": 5
+      },
+      {
+        "ColumnName": "carmodel",
+        "ColumnPurpose": "Ignore",
+        "ColumnDataFormat": "String",
+        "IsCategorical": false,
+        "Type": "Column",
+        "Version": 5
+      },
+      {
+        "ColumnName": "carname",
+        "ColumnPurpose": "Ignore",
+        "ColumnDataFormat": "String",
+        "IsCategorical": false,
+        "Type": "Column",
+        "Version": 5
+      },
+      {
+        "ColumnName": "platform",
+        "ColumnPurpose": "Ignore",
+        "ColumnDataFormat": "String",
+        "IsCategorical": true,
+        "Type": "Column",
+        "Version": 5
+      },
+      {
+        "ColumnName": "pickup_in_meters",
+        "ColumnPurpose": "Feature",
+        "ColumnDataFormat": "Single",
+        "IsCategorical": false,
+        "Type": "Column",
+        "Version": 5
+      },
+      {
+        "ColumnName": "pickup_in_seconds",
+        "ColumnPurpose": "Feature",
+        "ColumnDataFormat": "Single",
+        "IsCategorical": false,
+        "Type": "Column",
+        "Version": 5
+      },
+      {
+        "ColumnName": "user_id",
+        "ColumnPurpose": "Ignore",
+        "ColumnDataFormat": "Single",
+        "IsCategorical": false,
+        "Type": "Column",
+        "Version": 5
+      },
+      {
+        "ColumnName": "price_start_local",
+        "ColumnPurpose": "Feature",
+        "ColumnDataFormat": "Single",
+        "IsCategorical": false,
+        "Type": "Column",
+        "Version": 5
+      },
+      {
+        "ColumnName": "price_bid_local",
+        "ColumnPurpose": "Label",
+        "ColumnDataFormat": "Single",
+        "IsCategorical": false,
+        "Type": "Column",
+        "Version": 5
+      },
+      {
+        "ColumnName": "is_done",
+        "ColumnPurpose": "Feature",
+        "ColumnDataFormat": "String",
+        "IsCategorical": true,
+        "Type": "Column",
+        "Version": 5
+      },
+      {
+        "ColumnName": "column19",
+        "ColumnPurpose": "Ignore",
+        "ColumnDataFormat": "String",
+        "IsCategorical": false,
+        "Type": "Column",
+        "Version": 5
+      }
+    ]
+  },
+  "Environment": {
+    "Type": "LocalCPU",
+    "Version": 1
+  },
+  "RunHistory": {
+    "Version": 3,
+    "Type": "Result",
+    "Trials": [
+      {
+        "Version": 1,
+        "Type": "Trial",
+        "TrainerName": "LightGbmRegression",
+        "Score": 0.86081663515458562,
+        "RuntimeInSeconds": 0.315,
+        "Parameter": {
+          "_SCHEMA_": "e0 * e1 * e2 * e3",
+          "e0": {
+            "OutputColumnNames": [
+              "is_done"
+            ],
+            "InputColumnNames": [
+              "is_done"
+            ]
+          },
+          "e1": {
+            "OutputColumnNames": [
+              "distance_in_meters",
+              "duration_in_seconds",
+              "driver_rating",
+              "pickup_in_meters",
+              "pickup_in_seconds",
+              "price_start_local"
+            ],
+            "InputColumnNames": [
+              "distance_in_meters",
+              "duration_in_seconds",
+              "driver_rating",
+              "pickup_in_meters",
+              "pickup_in_seconds",
+              "price_start_local"
+            ]
+          },
+          "e2": {
+            "InputColumnNames": [
+              "is_done",
+              "distance_in_meters",
+              "duration_in_seconds",
+              "driver_rating",
+              "pickup_in_meters",
+              "pickup_in_seconds",
+              "price_start_local"
+            ],
+            "OutputColumnName": "Features"
+          },
+          "e3": {
+            "NumberOfLeaves": 4,
+            "MinimumExampleCountPerLeaf": 31,
+            "LearningRate": 0.24128935337086874,
+            "NumberOfTrees": 393,
+            "SubsampleFraction": 0.19766044415217945,
+            "MaximumBinCountPerFeature": 215,
+            "FeatureFraction": 0.9980842749840213,
+            "L1Regularization": 2.0070482559221588E-10,
+            "L2Regularization": 0.0029547683652516228,
+            "LabelColumnName": "price_bid_local",
+            "FeatureColumnName": "Features"
+          }
+        }
+      },
+      {
+        "Version": 1,
+        "Type": "Trial",
+        "TrainerName": "LightGbmRegression",
+        "Score": 0.8608070957422681,
+        "RuntimeInSeconds": 0.23,
+        "Parameter": {
+          "_SCHEMA_": "e0 * e1 * e2 * e3",
+          "e0": {
+            "OutputColumnNames": [
+              "is_done"
+            ],
+            "InputColumnNames": [
+              "is_done"
+            ]
+          },
+          "e1": {
+            "OutputColumnNames": [
+              "distance_in_meters",
+              "duration_in_seconds",
+              "driver_rating",
+              "pickup_in_meters",
+              "pickup_in_seconds",
+              "price_start_local"
+            ],
+            "InputColumnNames": [
+              "distance_in_meters",
+              "duration_in_seconds",
+              "driver_rating",
+              "pickup_in_meters",
+              "pickup_in_seconds",
+              "price_start_local"
+            ]
+          },
+          "e2": {
+            "InputColumnNames": [
+              "is_done",
+              "distance_in_meters",
+              "duration_in_seconds",
+              "driver_rating",
+              "pickup_in_meters",
+              "pickup_in_seconds",
+              "price_start_local"
+            ],
+            "OutputColumnName": "Features"
+          },
+          "e3": {
+            "NumberOfLeaves": 4,
+            "MinimumExampleCountPerLeaf": 31,
+            "LearningRate": 0.24138540754566915,
+            "NumberOfTrees": 391,
+            "SubsampleFraction": 0.19727759960903263,
+            "MaximumBinCountPerFeature": 215,
+            "FeatureFraction": 0.99820653482752575,
+            "L1Regularization": 2E-10,
+            "L2Regularization": 0.0029504379879497851,
+            "LabelColumnName": "price_bid_local",
+            "FeatureColumnName": "Features"
+          }
+        }
+      },
+      {
+        "Version": 1,
+        "Type": "Trial",
+        "TrainerName": "LightGbmRegression",
+        "Score": 0.86079813199138033,
+        "RuntimeInSeconds": 0.217,
+        "Parameter": {
+          "_SCHEMA_": "e0 * e1 * e2 * e3",
+          "e0": {
+            "OutputColumnNames": [
+              "is_done"
+            ],
+            "InputColumnNames": [
+              "is_done"
+            ]
+          },
+          "e1": {
+            "OutputColumnNames": [
+              "distance_in_meters",
+              "duration_in_seconds",
+              "driver_rating",
+              "pickup_in_meters",
+              "pickup_in_seconds",
+              "price_start_local"
+            ],
+            "InputColumnNames": [
+              "distance_in_meters",
+              "duration_in_seconds",
+              "driver_rating",
+              "pickup_in_meters",
+              "pickup_in_seconds",
+              "price_start_local"
+            ]
+          },
+          "e2": {
+            "InputColumnNames": [
+              "is_done",
+              "distance_in_meters",
+              "duration_in_seconds",
+              "driver_rating",
+              "pickup_in_meters",
+              "pickup_in_seconds",
+              "price_start_local"
+            ],
+            "OutputColumnName": "Features"
+          },
+          "e3": {
+            "NumberOfLeaves": 4,
+            "MinimumExampleCountPerLeaf": 32,
+            "LearningRate": 0.24230096845445576,
+            "NumberOfTrees": 374,
+            "SubsampleFraction": 0.19574007094047666,
+            "MaximumBinCountPerFeature": 215,
+            "FeatureFraction": 0.99802287686488733,
+            "L1Regularization": 2E-10,
+            "L2Regularization": 0.0029020542780029664,
+            "LabelColumnName": "price_bid_local",
+            "FeatureColumnName": "Features"
+          }
+        }
+      },
+      {
+        "Version": 1,
+        "Type": "Trial",
+        "TrainerName": "LightGbmRegression",
+        "Score": 0.8606779050866783,
+        "RuntimeInSeconds": 0.236,
+        "Parameter": {
+          "_SCHEMA_": "e0 * e1 * e2 * e3",
+          "e0": {
+            "OutputColumnNames": [
+              "is_done"
+            ],
+            "InputColumnNames": [
+              "is_done"
+            ]
+          },
+          "e1": {
+            "OutputColumnNames": [
+              "distance_in_meters",
+              "duration_in_seconds",
+              "driver_rating",
+              "pickup_in_meters",
+              "pickup_in_seconds",
+              "price_start_local"
+            ],
+            "InputColumnNames": [
+              "distance_in_meters",
+              "duration_in_seconds",
+              "driver_rating",
+              "pickup_in_meters",
+              "pickup_in_seconds",
+              "price_start_local"
+            ]
+          },
+          "e2": {
+            "InputColumnNames": [
+              "is_done",
+              "distance_in_meters",
+              "duration_in_seconds",
+              "driver_rating",
+              "pickup_in_meters",
+              "pickup_in_seconds",
+              "price_start_local"
+            ],
+            "OutputColumnName": "Features"
+          },
+          "e3": {
+            "NumberOfLeaves": 4,
+            "MinimumExampleCountPerLeaf": 31,
+            "LearningRate": 0.24165172079831476,
+            "NumberOfTrees": 393,
+            "SubsampleFraction": 0.19741849309589821,
+            "MaximumBinCountPerFeature": 215,
+            "FeatureFraction": 0.99803168381438434,
+            "L1Regularization": 2.0101052052531969E-10,
+            "L2Regularization": 0.0029524236244206389,
+            "LabelColumnName": "price_bid_local",
+            "FeatureColumnName": "Features"
+          }
+        }
+      },
+      {
+        "Version": 1,
+        "Type": "Trial",
+        "TrainerName": "LightGbmRegression",
+        "Score": 0.86060360308797312,
+        "RuntimeInSeconds": 0.206,
+        "Parameter": {
+          "_SCHEMA_": "e0 * e1 * e2 * e3",
+          "e0": {
+            "OutputColumnNames": [
+              "is_done"
+            ],
+            "InputColumnNames": [
+              "is_done"
+            ]
+          },
+          "e1": {
+            "OutputColumnNames": [
+              "distance_in_meters",
+              "duration_in_seconds",
+              "driver_rating",
+              "pickup_in_meters",
+              "pickup_in_seconds",
+              "price_start_local"
+            ],
+            "InputColumnNames": [
+              "distance_in_meters",
+              "duration_in_seconds",
+              "driver_rating",
+              "pickup_in_meters",
+              "pickup_in_seconds",
+              "price_start_local"
+            ]
+          },
+          "e2": {
+            "InputColumnNames": [
+              "is_done",
+              "distance_in_meters",
+              "duration_in_seconds",
+              "driver_rating",
+              "pickup_in_meters",
+              "pickup_in_seconds",
+              "price_start_local"
+            ],
+            "OutputColumnName": "Features"
+          },
+          "e3": {
+            "NumberOfLeaves": 4,
+            "MinimumExampleCountPerLeaf": 31,
+            "LearningRate": 0.24121884564425874,
+            "NumberOfTrees": 393,
+            "SubsampleFraction": 0.19759251620884488,
+            "MaximumBinCountPerFeature": 215,
+            "FeatureFraction": 0.99814525619375327,
+            "L1Regularization": 2.0051214990472332E-10,
+            "L2Regularization": 0.0029565677660844808,
+            "LabelColumnName": "price_bid_local",
+            "FeatureColumnName": "Features"
+          }
+        }
+      }
+    ],
+    "Estimators": {
+      "e0": "OneHotEncoding",
+      "e1": "ReplaceMissingValues",
+      "e2": "Concatenate",
+      "e3": "LightGbmRegression"
+    },
+    "Schema": "e0 * e1 * e2 * e3",
+    "MetricName": "RSquared",
+    "ModelFilePath": "C:\\Users\\Alono\\Desktop\\MLNETASP\\MLModel1.mlnet"
+  },
+  "Type": "TrainingConfig",
+  "Version": 5,
+  "TrainingOption": {
+    "Version": 2,
+    "Subsampling": false,
+    "Tuner": "eci-cfo",
+    "Type": "RegressionTrainingOption",
+    "TrainingTime": 300,
+    "OptimizeMetric": "RSquared",
+    "LabelColumn": "price_bid_local",
+    "AvailableTrainers": [
+      "LGBM"
+    ],
+    "ValidationOption": {
+      "Version": 0,
+      "Type": "TrainValidateSplitValidationOption",
+      "SplitRatio": 0.2
+    }
+  }
+}
